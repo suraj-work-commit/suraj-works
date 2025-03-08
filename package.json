@@ -1,0 +1,20 @@
+{
+  "name": "suraj-works",
+  "version": "1.0.0",
+  "description": "Projects developed by Suraj Shaik",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/suraj-work-commit/suraj-works.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/suraj-work-commit/suraj-works/issues"
+  },
+  "homepage": "https://github.com/suraj-work-commit/suraj-works#readme"
+}
