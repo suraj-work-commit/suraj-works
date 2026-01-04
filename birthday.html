@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Happy Birthday</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: black;
+        overflow: hidden;
+        height: 100vh;
+        color: white;
+      }
+
+      canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+      }
+
+      .message {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        opacity: 0;
+        animation: showText 2s ease forwards;
+        animation-delay: 4s;
+        padding: 20px;
+      }
+
+      .message h1 {
+        font-size: clamp(2.2rem, 8vw, 4.5rem);
+        animation: glow 2s infinite alternate;
+      }
+
+      .message h2 {
+        margin-top: 15px;
+        font-size: clamp(1.5rem, 6vw, 3rem);
+        color: #ffcc00;
+        animation: slideUp 1.5s ease forwards;
+      }
+
+      @keyframes showText {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 10px red;
+        }
+        to {
+          text-shadow: 0 0 25px gold;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      /* Extra spacing for very small phones */
+      @media (max-width: 360px) {
+        .message h1 {
+          font-size: 2rem;
+        }
+        .message h2 {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="fireworks"></canvas>
+
+    <div class="message">
+      <h1>🎉 Happy Birthday 🎉</h1>
+      <h2>Dear Kritika</h2>
+      <!-- ✨ Change name -->
+    </div>
+
+    <script>
+      const canvas = document.getElementById("fireworks");
+      const ctx = canvas.getContext("2d");
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      resizeCanvas();
+      window.addEventListener("resize", resizeCanvas);
+
+      let fireworks = [];
+
+      class Firework {
+        constructor() {
+          this.x = Math.random() * canvas.width;
+          this.y = canvas.height;
+          this.targetY = Math.random() * canvas.height * 0.4;
+          this.radius = 2;
+          this.speed = Math.random() * 3 + 3;
+          this.exploded = false;
+          this.particles = [];
+        }
+
+        update() {
+          if (!this.exploded) {
+            this.y -= this.speed;
+            if (this.y <= this.targetY) {
+              this.explode();
+              this.exploded = true;
+            }
+          } else {
+            this.particles.forEach((p) => p.update());
+          }
+        }
+
+        explode() {
+          for (let i = 0; i < 35; i++) {
+            this.particles.push(new Particle(this.x, this.y));
+          }
+        }
+
+        draw() {
+          if (!this.exploded) {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fill();
+          } else {
+            this.particles.forEach((p) => p.draw());
+          }
+        }
+      }
+
+      class Particle {
+        constructor(x, y) {
+          this.x = x;
+          this.y = y;
+          this.radius = 2;
+          this.color = `hsl(${Math.random() * 360},100%,50%)`;
+          this.speedX = (Math.random() - 0.5) * 6;
+          this.speedY = (Math.random() - 0.5) * 6;
+          this.life = 60;
+        }
+
+        update() {
+          this.x += this.speedX;
+          this.y += this.speedY;
+          this.life--;
+        }
+
+        draw() {
+          ctx.fillStyle = this.color;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      function animate() {
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (Math.random() < 0.05) {
+          fireworks.push(new Firework());
+        }
+
+        fireworks.forEach((f, i) => {
+          f.update();
+          f.draw();
+          if (f.exploded && f.particles.every((p) => p.life <= 0)) {
+            fireworks.splice(i, 1);
+          }
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      animate();
+    </script>
+  </body>
+</html>
